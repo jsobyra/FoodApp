@@ -7,13 +7,49 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Component
 public class Database {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private int id = 100;
+
+    public ResponseEntity<Order> addOrder(int orderId, Order order) {
+        order.getItemsId().forEach(itemId -> {
+            jdbcTemplate.update("INSERT INTO Order_History VALUES (?,?,?,?)",
+                    id++, orderId, order.getRestaurantId(), itemId);
+        });
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Order>> getOrders(int orderId) {
+        List<DatabaseOrder> databaseOrders = getAllOrders();
+
+        List<Order> orders = databaseOrders.stream()
+                .filter(o -> o.getOrderId() == orderId)
+                .map(o -> new Order(o.getRestaurantId(), Arrays.asList(o.getItemId())))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    private List<DatabaseOrder> getAllOrders() {
+        String sql = "SELECT o.id, o.order_id, o.restaurant_id, o.item_id FROM Order_History AS o;";
+
+        List<DatabaseOrder> databaseOrders = jdbcTemplate.query(sql,
+                (rs, rowNum) -> new DatabaseOrder(
+                        rs.getInt(1),
+                        rs.getInt(2),
+                        rs.getInt(3),
+                        rs.getInt(4)));
+
+        return databaseOrders;
+    }
 
     public ResponseEntity<ItemReview> addItemReviewToItem(int itemId, ItemReview itemReview) {
         jdbcTemplate.update("INSERT INTO Item_Review VALUES (?,?,?,?)",

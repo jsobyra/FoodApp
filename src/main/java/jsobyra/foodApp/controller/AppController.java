@@ -2,10 +2,7 @@ package jsobyra.foodApp.controller;
 
 
 import jsobyra.foodApp.model.database.Database;
-import jsobyra.foodApp.model.items.Item;
-import jsobyra.foodApp.model.items.ItemReview;
-import jsobyra.foodApp.model.items.Restaurant;
-import jsobyra.foodApp.model.items.RestaurantReview;
+import jsobyra.foodApp.model.items.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,5 +68,16 @@ public class AppController {
     public ResponseEntity<RestaurantReview> addRestaurantReviewToRestaurant(@RequestParam("restaurantId") int restaurantId,
                                                                             @RequestBody RestaurantReview restaurantReview) {
         return database.addRestaurantReviewToRestaurant(restaurantId, restaurantReview);
+    }
+
+    @RequestMapping(value = "/makeOrder", method = RequestMethod.POST)
+    public ResponseEntity<Order> addOrder(@RequestParam("orderId") int orderId,
+                                                @RequestBody Order order) {
+        return database.addOrder(orderId, order);
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    public ResponseEntity<List<Order>> getOrder(@RequestParam("orderId") int orderId) {
+        return database.getOrders(orderId);
     }
 }

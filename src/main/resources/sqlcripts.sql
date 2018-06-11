@@ -3,6 +3,7 @@ DROP TABLE Item_Review;
 DROP TABLE Item;
 DROP TABLE Restaurant;
 DROP TABLE Location;
+DROP TABLE Order_History;
 
 CREATE TABLE IF NOT EXISTS Location (
     id int NOT NULL,
@@ -45,6 +46,14 @@ CREATE TABLE IF NOT EXISTS Item_Review (
     item_id int NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (item_id) REFERENCES Item(id)
+);
+
+CREATE TABLE IF NOT EXISTS Order_History (
+    id int NOT NULL,
+    order_id int NOT NULL,
+    restaurant_id int NOT NULL,
+    item_id int NOT NULL,
+    PRIMARY KEY (id)
 );
 
 
