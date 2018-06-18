@@ -77,7 +77,7 @@ public class AppController {
     }
 
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
-    public ResponseEntity<List<Order>> getOrder(@RequestParam("orderId") int orderId) {
+    public ResponseEntity<List<FineOrder>> getOrder(@RequestParam("orderId") int orderId) {
         return database.getOrders(orderId);
     }
 }

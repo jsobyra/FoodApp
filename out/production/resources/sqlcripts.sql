@@ -3,7 +3,7 @@ DROP TABLE Item_Review;
 DROP TABLE Item;
 DROP TABLE Restaurant;
 DROP TABLE Location;
-DROP TABLE OrderHistory;
+DROP TABLE Order_History;
 
 CREATE TABLE IF NOT EXISTS Location (
     id int NOT NULL,

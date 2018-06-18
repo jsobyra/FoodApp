@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,13 +29,18 @@ public class Database {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<Order>> getOrders(int orderId) {
+    public ResponseEntity<List<FineOrder>> getOrders(int orderId) {
         List<DatabaseOrder> databaseOrders = getAllOrders();
+        List<Restaurant> restaurants = getAllRestaurants().getBody();
+        List<Item> items = getAllItems().getBody();
 
-        List<Order> orders = databaseOrders.stream()
+        List<FineOrder> orders = databaseOrders.stream()
                 .filter(o -> o.getOrderId() == orderId)
-                .map(o -> new Order(o.getRestaurantId(), Arrays.asList(o.getItemId())))
+                .map(o -> new FineOrder(
+                        restaurants.stream().filter(r -> r.getId() == o.getRestaurantId()).findFirst().get().getName(),
+                        items.stream().filter(i -> i.getId() == o.getItemId()).collect(Collectors.toList())))
                 .collect(Collectors.toList());
+
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
